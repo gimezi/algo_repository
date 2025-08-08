@@ -1,57 +1,28 @@
-str = input()
-ks = []
-qs = []
+s = input().strip()
 
-temp = ''
+def fun(s, idx):
+    result = 0  # 결과 문자열의 길이
+    while idx < len(s):
+        now = s[idx]
 
-for i in range(len(str)):
-    letter = str[i]
-
-    # 여는 괄호일 때
-    if letter == '(':
-        k = int(str[i - 1])
-        ks.append(k)
-        temp = temp[:len(temp) - 1]
-        if temp != '':
-            qs.append(temp)
-            temp = ''
-
-    # 닫는 괄호일 때
-    elif letter == ')':
-        if temp != '':
-            qs.append(temp)
-            temp = ''
-
-
-    # 그냥 문자일 때
-    else:
-        temp += letter
-    
-if temp != '':
-    qs.append(temp)
-
-print(ks)
-print(qs)
-
-result = ''
-while qs or ks:
-    print(qs, ks)
-    if qs:
-        q = qs.pop()
-        if len(ks):
-            k = ks.pop()
-            result = k * (q + result)
-        else:
-            result = q + result
-    
-    # q가 다 비었고, k만 남았을때
-    else:
-        k = ks.pop()
-        result = k * result
-
-print(result)
-print(len(result))
-
-    
+        if now == ')':
+            return result, idx + 1  # 괄호 닫히면 현재 길이, 위치 반환
         
-    
+        if now.isdigit():  # 숫자면
+            # 다음 문자가 여는 괄호인지 확인
+            if idx + 1 < len(s) and s[idx + 1] == '(': 
+                num = int(now)
+                inner_len, next_idx = fun(s, idx + 2)
+                result += num * inner_len
+                idx = next_idx
+            else:
+                result += 1
+                idx += 1
+        else:
+            result += 1
+            idx += 1
+
+    return result, idx
+
+length, _ = fun(s, 0)
+print(length)
